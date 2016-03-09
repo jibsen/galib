@@ -237,6 +237,16 @@ GAIncrementalGA::step()
 
     stats.numeval += c1 + c2;
 
+#ifdef _OPENMP
+    #pragma omp parallel sections
+    {
+      #pragma omp section
+      child1->evaluate();
+      #pragma omp section
+      child2->evaluate();
+    }
+#endif
+
     if(rs == PARENT){
       child1 = pop->replace(child1, mom);
       if(mom == dad)		// this is a possibility, if so do worst
